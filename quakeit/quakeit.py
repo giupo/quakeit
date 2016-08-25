@@ -77,17 +77,6 @@ def getData():
     return old_values
 
 
-def generateImage():
-    data = getData()
-    print data
-    series = pandas.Series(data=data.values(), index=data.keys())
-    title = "Intensita' #terremoto Italia Centrale " + \
-            "(fonte @INGVterremoti)"
-    plot = series.plot(grid=True, title=title)
-    fig = plot.get_figure()
-    fig.savefig('asdf.png')
-
-
 class MainController(tornado.web.RequestHandler):
     def set_default_headers(self):
         self.set_header('Content-Type', 'application/json')
