@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os
 import sys
 
 from setuptools import setup
@@ -25,6 +24,12 @@ history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
 requirements = [
     # TODO: put package requirements here
+    'python-twitter',
+    'pandas',
+    'numpy',
+    'pytz',
+    'python-dateutil',
+    'tornado'
 ]
 
 test_requirements = [
@@ -40,7 +45,8 @@ test_requirements = [
 setup(
     name='quakeit',
     version='0.0.1',
-    description='Loads data from twitter to show a live graph of earthquakes in Central Italy',
+    description='Loads data from twitter to show a live graph ' +
+                'of earthquakes in Central Italy',
     long_description=readme + '\n\n' + history,
     author='Giuseppe Acito',
     author_email='giuseppe.acito@gmail.com',
@@ -48,8 +54,9 @@ setup(
     packages=[
         'quakeit',
     ],
-    package_dir={'quakeit':
-                 'quakeit'},
+    package_dir={
+        'quakeit': 'quakeit'
+    },
     include_package_data=True,
     install_requires=requirements,
     license="BSD",
@@ -60,13 +67,14 @@ setup(
         'Intended Audience :: Developers',
         'License :: OSI Approved :: BSD License',
         'Natural Language :: English',
-        "Programming Language :: Python :: 2",
-        'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.3',
     ],
     cmdclass={'test': PyTest},
     test_suite='tests',
-    tests_require=test_requirements
+    tests_require=test_requirements,
+    entry_points={
+        'console_scripts': [
+            'quakeit=quakeit.quakeit:main',
+        ]
+    },
 )
