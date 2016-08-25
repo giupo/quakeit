@@ -3,7 +3,7 @@
 
 import sys
 
-from setuptools import setup
+from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
 
 
@@ -25,11 +25,11 @@ history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 requirements = [
     # TODO: put package requirements here
     'python-twitter',
-    'pandas',
     'numpy',
     'pytz',
     'python-dateutil',
-    'tornado'
+    'tornado',
+    'sqlalchemy'
 ]
 
 test_requirements = [
@@ -51,12 +51,11 @@ setup(
     author='Giuseppe Acito',
     author_email='giuseppe.acito@gmail.com',
     url='https://github.com/giupo/quakeit',
-    packages=[
-        'quakeit',
-    ],
-    package_dir={
-        'quakeit': 'quakeit'
-    },
+    packages=find_packages(
+        exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
+    #package_dir={
+    #    'quakeit': 'quakeit'
+    #},
     include_package_data=True,
     install_requires=requirements,
     license="BSD",
