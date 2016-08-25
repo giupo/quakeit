@@ -1,0 +1,56 @@
+{
+  "name": "quakeit",
+  "version": "1.0.0",
+  "description": "Front end to quakeit",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "start": "hjs-dev-server",
+    "build": "webpack",
+    "test": "browserify tests/js/*.js | tape-run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/giupo/quakeit.git"
+  },
+  "keywords": [
+    "earthquake",
+    "data-viz"
+  ],
+  "author": "Giuseppe Acito",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/giupo/quakeit/issues"
+  },
+  "homepage": "https://github.com/giupo/quakeit#readme",
+  "dependencies": {
+    "ampersand-app": "^2.0.0",
+    "ampersand-model": "^8.0.0",
+    "ampersand-router": "^4.0.0",
+    "babel": "^6.5.2",
+    "babel-core": "^6.14.0",
+    "babel-loader": "^6.2.5",
+    "babel-preset-react": "^6.11.1",
+    "babel-runtime": "^6.11.6",
+    "css-loader": "^0.24.0",
+    "file-loader": "^0.9.0",
+    "hjs-webpack": "^8.3.0",
+    "install": "^0.8.1",
+    "json-loader": "^0.5.4",
+    "postcss-loader": "^0.10.1",
+    "react": "^15.3.1",
+    "react-dom": "^15.3.1",
+    "style-loader": "^0.13.1",
+    "stylus": "^0.54.5",
+    "stylus-loader": "^2.3.1",
+    "url-loader": "^0.5.7",
+    "yeticss": "^7.3.0"
+  },
+  "devDependencies": {
+    "babel-preset-es2015": "^6.14.0",
+    "webpack-dev-server": "^1.15.0"
+  }
+}
