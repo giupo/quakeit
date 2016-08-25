@@ -82,13 +82,10 @@ class MainController(tornado.web.RequestHandler):
         self.set_header('Content-Type', 'application/json')
 
     def get(self):
-        #try:
-        #    encoded = {k.isoformat(): v for k, v in getData().iteritems()}
-        #    self.finish(json.dumps(encoded))
-        #except Exception as e:
-        #    self.finish(str(e))
-        self.finish("Hello world!")
-        
+        encoded = {k.isoformat(): v for k, v in getData().iteritems()}
+        self.finish(json.dumps(encoded))
+
+
 routes = [
     (r'/', MainController)
 ]
