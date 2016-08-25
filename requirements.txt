@@ -13,3 +13,4 @@ singledispatch==3.4.0.3
 six==1.10.0
 SQLAlchemy==1.0.14
 tornado==4.4.1
+psycopg2
