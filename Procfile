@@ -1,1 +1,1 @@
-web: quakeit
+web: quakeit --port=80
