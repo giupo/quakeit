@@ -107,7 +107,8 @@ parse_command_line()
 
 def startServer():
     server = tornado.httpserver.HTTPServer(application)
-    server.listen(options.port)
+    port = int(os.environ.get('PORT', options.port))
+    server.listen(port)
     tornado.ioloop.IOLoop.instance().start()
 
 
