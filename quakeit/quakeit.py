@@ -5,15 +5,15 @@ import dateutil
 import pandas
 import datetime
 import pytz
-import matplotlib
 import pickle
 import numpy
 import os
+import json
 
 import tornado.web
 import tornado.ioloop
 import tornado.httpserver
-
+from tornado.options import define, options, parse_command_line
 
 OLD_DATA = "old_data"
 
@@ -39,10 +39,12 @@ def getData():
                 data[7].replace('Prof=', '').replace('Km', ''))
             self.zona = data[8].replace('Zona=', '').replace('.', '')
             self.time = dateutil.parser.parse(tweet.created_at)
-
-    with open(OLD_DATA, 'rb') as f:
-        values = pickle.load(f)
-
+    try:
+        with open(OLD_DATA, 'rb') as f:
+            old_values = pickle.load(f)
+    except:
+        old_values = {}
+    
     try:
         api = twitter.Api(consumer_key=CONSUMER_KEY,
                           consumer_secret=CONSUMER_SECRET,
@@ -64,15 +66,15 @@ def getData():
         time.append(time[-1] - datetime.timedelta(hours=1))
         new_values = dict(zip(time, values))
         for k, v in new_values.iteritems():
-            values[k] = v
+            old_values[k] = v
 
         with open(OLD_DATA, 'wb') as f:
-            pickle.dump(values, f)
+            pickle.dump(old_values, f)
     except:
         with open(OLD_DATA, 'rb') as f:
-            values = pickle.load(f)
+            old_values = pickle.load(f)
 
-    return values
+    return old_values
 
 
 def generateImage():
@@ -87,9 +89,12 @@ def generateImage():
 
 
 class MainController(tornado.web.RequestHandler):
+    def set_default_headers(self):
+        self.set_header('Content-Type', 'application/json')
+
     def get(self):
-        self.write("Hello world")
-        self.finish()
+        encoded = {k.isoformat(): v for k, v in getData().iteritems()}
+        self.finish(json.dumps(encoded))
 
 routes = [
     (r'/', MainController)
@@ -102,12 +107,14 @@ settings = {
 
 
 application = tornado.web.Application(routes, **settings)
-port = 80
+
+define("port", default=80, type=int, help="Listen port")
+parse_command_line()
 
 
 def startServer():
     server = tornado.httpserver.HTTPServer(application)
-    server.listen(port)
+    server.listen(options.port)
     tornado.ioloop.IOLoop.instance().start()
 
 
