@@ -1,1 +1,1 @@
-web: quakeit --port=80
+web: python setup.py install; quakeit --port=80
