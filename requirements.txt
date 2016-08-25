@@ -11,5 +11,5 @@ requests==2.11.1
 requests-oauthlib==0.6.2
 singledispatch==3.4.0.3
 six==1.10.0
+SQLAlchemy==1.0.14
 tornado==4.4.1
-wheel==0.24.0
