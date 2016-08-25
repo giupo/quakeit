@@ -70,7 +70,7 @@ class DataFromTweet(object):
         self.lat = float(groups[7])
         self.lon = float(groups[8])
         self.depth_km = float(groups[9])
-        print self.depth_km
+        print self.ml
         self.time = datetime.datetime(
             *[int(x) for x in groups[1:7]]
         )
@@ -103,7 +103,7 @@ def getData():
         access_token_secret=ACCESS_TOKEN_SECRET
     )
 
-    tweets = api.GetUserTimeline(screen_name="INGVterremoti", count=200)
+    tweets = api.GetUserTimeline(screen_name="INGVterremoti", count=500)
     tweets = [t for t in tweets if t.text.startswith("#terremoto")]
     data = []
     for x in tweets:

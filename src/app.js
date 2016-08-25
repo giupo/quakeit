@@ -12,7 +12,7 @@ app.extend({
     this.router = new Router();
     this.router.history.start({pushState: true});
     app.quakes = new QuakeCollection();
-    this.trigger('AppInit', 'ciula');
+    this.trigger('AppInit', 'ok');
   }
 });
 
@@ -20,5 +20,18 @@ app.on('AppInit', (data)=> {
   console.log('App started ' + data);
 });
 
-app.init();
-app.quakes.fetch();
+require('domready')(function() {
+  app.init();
+  app.quakes.fetch({
+    success: function(collection, response, options) {
+      collection.each(function(data) {
+        app.chart.series[0].addPoint({
+          x: data.time,
+          y: data.ml
+        }, false);
+      });
+
+      app.chart.redraw();
+    }
+  });
+});

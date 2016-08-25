@@ -3,24 +3,64 @@
 import app from 'ampersand-app';
 import React from 'react';
 import ReactHighcharts from 'react-highcharts';
+import Highcharts from 'highcharts';
+import $ from 'jquery';
+
+const chartClassName = 'Puppu';
+
+var getChartReferenceByClassName = function (className) {
+  var cssClassName = className;
+  var foundChart = null;
+
+  $(Highcharts.charts).each(function(i, chart){    
+    if(chart.container.classList.contains(cssClassName)){
+      foundChart = chart;
+      return chart;
+    }
+    return null;
+  });
+
+  return foundChart;
+};
 
 var config = {
+  chart: {
+    className: chartClassName
+  },
+  
   title: {
     text: 'Intensita\' #terremoto da inizio evento fonte: @INGVterremoti'
   },
-  
+
+
   xAxis: {
-    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    type: 'datetime',
+    title: {
+      text: 'Date'
+    }
   },
+
+  yAxis: {        
+  
+  },
+
   series: [{
-    data: [29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 295.6, 454.4]
-  }]
+    data: []
+  }],
+
+  tooltip: {
+  }
 };
 
 
 export default React.createClass({
   displayName : 'PublicPage',
 
+  componentDidMount() {
+    var chart = getChartReferenceByClassName(chartClassName);
+    app.chart = chart;
+  },
+  
   render () {
     return (
       <ReactHighcharts config={config}></ReactHighcharts>
