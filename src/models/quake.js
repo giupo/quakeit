@@ -6,18 +6,23 @@ import Collection from 'ampersand-collection';
 import restMixin from 'ampersand-collection-rest-mixin';
 import underscoreMixin from 'ampersand-collection-underscore-mixin';
 
-var Switch = AmpersandModel.extend({
-  urlRoot: 'https://localhost:8443/api/v1/switch',
+var Quake = AmpersandModel.extend({
+  urlRoot: '/data',
   props: {
-    pin: 'integer',
-    description: 'string'
+    id: 'number',
+    text: 'string',
+    zona: 'string',
+    lat: 'number',
+    lon: 'number',
+    ml: 'number',
+    depth : 'number',
+    time: 'date'
   }
-});
+})
 
-var SwitchCollection = Collection.extend(underscoreMixin, restMixin, {
-    url: '/api/v1/quake',
-    model: Switch
-});
+module.exports.Quake = Quake;
 
-app.switches = new SwitchCollection();
-app.switches.fetch();
+module.exports.QuakeCollection = Collection.extend(underscoreMixin, restMixin, {
+    url: '/data',
+    model: Quake
+});

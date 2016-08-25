@@ -3,9 +3,9 @@
 import twitter
 
 import datetime
-import dateutil.parser
 import pytz
 
+import re
 import os
 import json
 import mimetypes
@@ -54,17 +54,26 @@ content_path = resource_filename(
 
 
 class DataFromTweet(object):
+    pattern = re.compile("#terremoto\sML:([-+]?[0-9]*\.?[0-9]+)\s(\d+)-(\d+)-(\d+)\s(\d+):(\d+):(\d+\s)UTC\sLat=([-+]?[0-9]*\.?[0-9]+)\sLon=([-+]?[0-9]*\.?[0-9]+)\sProf=([-+]?[0-9]*\.?[0-9]+)Km\sZona=(\w+)\.")  # noqa
+
     def __init__(self, tweet):
         self.id = tweet.id
         self.text = tweet.text
-        data = tweet.text.split(' ')
-        self.zona = data[8].replace('Zona=', '').replace('.', '')
-        self.ml = float(data[1].replace('ML:', ''))
-        self.lat = float(data[5].replace('Lat=', ''))
-        self.lon = float(data[6].replace('Lon=', ''))
-        self.depth_km = float(
-            data[7].replace('Prof=', '').replace('Km', ''))
-        self.time = dateutil.parser.parse(tweet.created_at)
+        match = DataFromTweet.pattern.match(self.text)
+        if not match:
+            self.id = 0
+            return
+
+        groups = match.groups()
+        self.zona = groups[10]
+        self.ml = float(groups[0])
+        self.lat = float(groups[7])
+        self.lon = float(groups[8])
+        self.depth_km = float(groups[9])
+        print self.depth_km
+        self.time = datetime.datetime(
+            *[int(x) for x in groups[1:7]]
+        )
 
     def to_dict(self):
         return {
@@ -99,8 +108,10 @@ def getData():
     data = []
     for x in tweets:
         try:
-            print x
-            data.append(DataFromTweet(x))
+            data_from_t = DataFromTweet(x)
+            if data_from_t.id == 0:
+                continue
+            data.append(data_from_t)
         except Exception as e:
             print e
             pass
@@ -108,7 +119,7 @@ def getData():
     data = [x for x in data
             if x.zona in ['Rieti', 'Ascoli Piceno', 'Perugia', 'Macerata']]
     data = [x for x in data
-            if x.time > pytz.utc.localize(datetime.datetime(2016, 8, 21))]
+            if x.time > datetime.datetime(2016, 8, 21)]
 
     return data
 
@@ -118,18 +129,19 @@ def shouldUpdate(session):
     if timestamp is None:
         return True
     else:
+        print timestamp
         now = datetime.datetime.now()
-        return (now - timestamp.time).seconds >= UPDATE_TIME
+        print now
+        return (now - timestamp).seconds >= UPDATE_TIME
 
 
 def mergeWithDB(data, session):
-    allids = [value for value in session.query(Quake.id).distinct()]
+    allids = [value[0] for value in session.query(Quake.id)]
     newids = [x.id for x in data]
     diff = list(set(newids) - set(allids))
+    print diff
     newdata = [x for x in data if x.id in diff]
-
     for datum in newdata:
-        print datum
         quake = Quake()
         quake.id = datum.id
         quake.text = datum.text
@@ -138,6 +150,8 @@ def mergeWithDB(data, session):
         quake.zona = datum.zona
         quake.ml = datum.ml
         quake.depth = datum.depth_km
+        print datum.time
+        quake.time = datum.time
         session.add(quake)
 
 
@@ -150,18 +164,26 @@ class DataController(tornado.web.RequestHandler):
         try:
             if shouldUpdate(session):
                 data = getData()
-                print(data)
                 mergeWithDB(data, session)
                 session.commit()
 
             if id is None:
-                data = [x.to_dict() for x in session.query(Quake).all()]
-                self.finish(json.dumps(data))
+                data = [
+                    x.to_dict()
+                    for x in session.query(Quake).order_by(Quake.time).all()
+                ]
+                newdata = []
+                for datum in data:
+                    datum['time'] = datum['time'].isoformat()
+                    newdata.append(datum)
+                self.finish(json.dumps(newdata))
             else:
                 data = session.query(Quake).get(int(id))
                 if data is None:
                     raise tornado.web.HTTPError(
                         status_code=404)
+                data = data.to_dict()
+                data['time'] = data['time'].isoformat()
                 self.finish(json.dumps(data.to_dict()))
         except Exception as e:
             print (e)

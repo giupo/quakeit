@@ -5,6 +5,10 @@ import React from 'react';
 import ReactHighcharts from 'react-highcharts';
 
 var config = {
+  title: {
+    text: 'Intensita\' #terremoto da inizio evento fonte: @INGVterremoti'
+  },
+  
   xAxis: {
     categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
   },
@@ -16,19 +20,6 @@ var config = {
 
 export default React.createClass({
   displayName : 'PublicPage',
-
-  onLoginClick (event) {
-    event.preventDefault();
-    console.log('cribbio');
-    let x = app.router.history.navigate('/login');
-    console.log(x);
-  },
-
-  onOtherPageClick (event) {
-    event.preventDefault();
-    console.log('ciola');
-    app.router.history.navigate('/otherpage');
-  },
 
   render () {
     return (
