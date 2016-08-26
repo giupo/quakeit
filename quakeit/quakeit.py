@@ -20,7 +20,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 dburl = os.environ.get('DATABASE_URL',  'sqlite://')
-engine = create_engine(dburl, echo=True)
+engine = create_engine(dburl, echo=False)
 Session = sessionmaker(bind=engine)
 
 Base = declarative_base()
@@ -161,6 +161,9 @@ class DataController(tornado.web.RequestHandler):
         self.set_header('Content-Type', 'application/json')
 
     def get(self, id=None):
+
+        print "-------------------------", id, "-----------------"
+
         session = Session()
         try:
             if shouldUpdate(session):
@@ -193,6 +196,7 @@ class DataController(tornado.web.RequestHandler):
                         x.to_dict()
                         for x in session.query(Quake).filter_by(zona=id).all()
                     ]
+                    print data
                     newdata = []
                     for datum in data:
                         datum['time'] = datum['time'].isoformat()

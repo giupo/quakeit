@@ -3,20 +3,27 @@
 import app from 'ampersand-app';
 import Router from './router';
 import { QuakeCollection } from './models/quake';
+import _ from 'underscore';
 
 window.app = app;
 
 app.extend({
   init() {
     console.log('app starting');
+   
+    app.cities = ["Macerata", "Rieti", "Ascoli Piceno", "Perugia"];
+    //app.cities = ["Ascoli Piceno"];
+    app.quakes = new Object();
+
+    _.each(app.cities, function(city) {
+      app.quakes[city] = new QuakeCollection({
+        zona: city
+      });
+      app.quakes[city].zona = city;
+    });
+    
     this.router = new Router();
     this.router.history.start({pushState: true});
-    app.quakes = {
-      Macerata: new QuakeCollection(),
-      Perugia: new QuakeCollection(),
-      //Ascoli: new QuakeCollection(),
-      Rieti: new QuakeCollection()
-    },
     this.trigger('AppInit', 'ok');
   }
 });
