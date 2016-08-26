@@ -70,7 +70,6 @@ class DataFromTweet(object):
         self.lat = float(groups[7])
         self.lon = float(groups[8])
         self.depth_km = float(groups[9])
-        print self.ml
         self.time = datetime.datetime(
             *[int(x) for x in groups[1:7]]
         )
@@ -129,9 +128,7 @@ def shouldUpdate(session):
     if timestamp is None:
         return True
     else:
-        print timestamp
         now = datetime.datetime.now()
-        print now
         return (now - timestamp).seconds >= UPDATE_TIME
 
 
@@ -139,7 +136,6 @@ def mergeWithDB(data, session):
     allids = [value[0] for value in session.query(Quake.id)]
     newids = [x.id for x in data]
     diff = list(set(newids) - set(allids))
-    print diff
     newdata = [x for x in data if x.id in diff]
     for datum in newdata:
         quake = Quake()
@@ -150,7 +146,6 @@ def mergeWithDB(data, session):
         quake.zona = datum.zona
         quake.ml = datum.ml
         quake.depth = datum.depth_km
-        print datum.time
         quake.time = datum.time
         session.add(quake)
 
