@@ -161,8 +161,9 @@ session = Session()
 try:
     session.query(Quake).filter_by(id=123).delete()
 
-    class Tweet(object):
+    class Tweet(object):  # I'm a professional mess creator
         pass
+
     tweet = Tweet()
     tweet.text = "#terremoto ML:6.0 2016-08-24 01:36:32 UTC " + \
                  "Lat=42.71 Lon=13.22 Prof=4Km Zona=Rieti."
