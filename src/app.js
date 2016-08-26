@@ -11,7 +11,7 @@ app.extend({
   init() {
     console.log('app starting');
    
-    app.cities = ["Macerata", "Rieti", "Ascoli Piceno", "Perugia"];
+    app.cities = ["Rieti", "Perugia", "Macerata", "Norcia", "Ascoli Piceno"];
     //app.cities = ["Ascoli Piceno"];
     app.quakes = new Object();
 

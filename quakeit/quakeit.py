@@ -60,10 +60,10 @@ content_path = resource_filename(
 
 
 class DataFromTweet(object):
-    pattern = re.compile("#terremoto\sML:([-+]?[0-9]*\.?[0-9]+)\s(\d+)-(\d+)-(\d+)\s(\d+):(\d+):(\d+\s)UTC\sLat=([-+]?[0-9]*\.?[0-9]+)\sLon=([-+]?[0-9]*\.?[0-9]+)\sProf=([-+]?[0-9]*\.?[0-9]+)Km\sZona=(\w+)\.")  # noqa
-
+    pattern = re.compile("#terremoto\sML:([-+]?[0-9]*\.?[0-9]+)\s(\d+)-(\d+)-(\d+)\s(\d+):(\d+):(\d+\s)UTC\sLat=([-+]?[0-9]*\.?[0-9]+)\sLon=([-+]?[0-9]*\.?[0-9]+)\sProf=([-+]?[0-9]*\.?[0-9]+)Km\sZona=(.+)\.\s")  # noqa
     def __init__(self, tweet):
         self.id = tweet.id
+        print tweet.text
         self.text = tweet.text
         match = DataFromTweet.pattern.match(self.text)
         if not match:
@@ -167,9 +167,11 @@ class DataController(tornado.web.RequestHandler):
         session = Session()
         try:
             if shouldUpdate(session):
+                print "updating data"
                 data = getData()
                 mergeWithDB(data, session)
                 session.commit()
+                print "data updated"
 
             if id is None:
                 data = [
