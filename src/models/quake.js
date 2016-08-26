@@ -22,7 +22,13 @@ var Quake = AmpersandModel.extend({
 
 module.exports.Quake = Quake;
 
-module.exports.QuakeCollection = Collection.extend(underscoreMixin, restMixin, {
-    url: '/data',
-    model: Quake
+module.exports.QuakeCollection = Collection.extend(underscoreMixin, restMixin, {  
+  url: function() {
+    if (this.zona !== undefined) {
+      return '/data/' + this.zona;
+    } else {
+      return '/data'
+    }
+  },
+  model: Quake
 });

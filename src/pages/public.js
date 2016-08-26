@@ -29,9 +29,8 @@ var config = {
   },
   
   title: {
-    text: 'Intensita\' #terremoto da inizio evento fonte: @INGVterremoti'
+    text: 'Magnitudo #terremoto fonte: <a href="https://twitter.com/INGVterremoti">@INGVterremoti</a>'
   },
-
 
   xAxis: {
     type: 'datetime',
@@ -44,12 +43,20 @@ var config = {
   
   },
 
-  series: [{
-    data: []
-  }],
+  //series: [{
+  //  data: []
+  //}],
 
   tooltip: {
-  }
+    formatter: function () {
+      var html = 'Orario:' + this.x +'<br/>' +
+        'Magnitudo: <b>' + this.y + '</b><br/>' +
+        'Profondita\': ' + this.point.info.depth + 'km<br/>' +
+        'Zona: <b>' + this.point.info.zona + '</b> (Lat:' + this.point.info.lat +
+        ', Lon:' + this.point.info.lon +' )' ;
+      return html;
+    }
+  },
 };
 
 
