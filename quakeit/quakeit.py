@@ -177,9 +177,10 @@ class DataController(tornado.web.RequestHandler):
                 if data is None:
                     raise tornado.web.HTTPError(
                         status_code=404)
+                print data
                 data = data.to_dict()
                 data['time'] = data['time'].isoformat()
-                self.finish(json.dumps(data.to_dict()))
+                self.finish(json.dumps(data))
         except Exception as e:
             print (e)
             session.rollback()
