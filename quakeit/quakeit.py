@@ -156,6 +156,32 @@ def mergeWithDB(data, session):
         session.add(quake)
 
 
+# inserisco evento zero
+session = Session()
+try:
+    class Tweet(object):
+        pass
+    tweet = Tweet()
+    tweet.text = "#terremoto ML:6.0 2016-08-24 01:36:32 UTC " + \
+                 "Lat=42.71 Lon=13.22 Prof=4Km Zona=Rieti."
+    tweet.created_at = datetime.datetime(2016, 8, 24, 3, 36, 32)
+    tweet.id = 1
+    data = DataFromTweet(tweet)
+    data.lat = 42.71
+    data.lon =13.22
+    data.zona = "Rieti"
+    data.ml = 6.0
+    data.depth_km = 4
+    data.time = tweet.created_at
+    mergeWithDB([data], session)
+    session.commit()
+except Exception as e:
+    print e
+    session.rollback()
+finally:
+    session.close()
+
+
 class DataController(tornado.web.RequestHandler):
     def set_default_headers(self):
         self.set_header('Content-Type', 'application/json')
