@@ -3,8 +3,6 @@
 import twitter
 
 import datetime
-import pytz
-
 import re
 import os
 import json
@@ -28,6 +26,14 @@ Session = sessionmaker(bind=engine)
 Base = declarative_base()
 
 UPDATE_TIME = 1  # minute
+
+
+def is_int(x):
+    try:
+        int(x)
+        return True
+    except ValueError:
+        return False
 
 
 class Quake(Base):
@@ -173,14 +179,26 @@ class DataController(tornado.web.RequestHandler):
                     newdata.append(datum)
                 self.finish(json.dumps(newdata))
             else:
-                data = session.query(Quake).get(int(id))
-                if data is None:
-                    raise tornado.web.HTTPError(
-                        status_code=404)
-                print data
-                data = data.to_dict()
-                data['time'] = data['time'].isoformat()
-                self.finish(json.dumps(data))
+                if is_int(id):
+                    data = session.query(Quake).get(int(id))
+                    if data is None:
+                        raise tornado.web.HTTPError(
+                            status_code=404)
+
+                    data = data.to_dict()
+                    data['time'] = data['time'].isoformat()
+                    self.finish(json.dumps(data))
+                else:
+                    data = [
+                        x.to_dict()
+                        for x in session.query(Quake).filter_by(zona=id).all()
+                    ]
+                    newdata = []
+                    for datum in data:
+                        datum['time'] = datum['time'].isoformat()
+                        newdata.append(datum)
+                    self.finish(json.dumps(newdata))
+
         except Exception as e:
             print (e)
             session.rollback()
