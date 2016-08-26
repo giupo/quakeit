@@ -159,7 +159,7 @@ def mergeWithDB(data, session):
 # inserisco evento zero
 session = Session()
 try:
-    session.query(Quake).filter_by(id=123).delete()
+    session.query(Quake).filter_by(id=0).delete()
 
     class Tweet(object):  # I'm a professional mess creator
         pass
