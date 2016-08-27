@@ -13,6 +13,6 @@ export default Router.extend({
   public () {
     app.trigger('hello', {data:'ciccio'});
     /* jshint ignore:start */
-    ReactDom.render(<PublicPage/>, document.body);
+    ReactDom.render(<PublicPage/>, document.getElementById("root"));
   }
 });

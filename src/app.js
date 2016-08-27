@@ -8,64 +8,74 @@ import _ from 'underscore';
 window.app = app;
 
 app.extend({
+
+  redrawing: false,
+
+  cities: ["Rieti", "Perugia", "Macerata", "Norcia", "Ascoli Piceno"],
+
   init() {
-    console.log('app starting');
-   
-    app.cities = ["Rieti", "Perugia", "Macerata", "Norcia", "Ascoli Piceno"];
+    console.log('app starting'); 
+    this.router = new Router();
+    this.router.history.start({pushState: true});
+    this.trigger('AppInit', 'ok');
+  },
+  
+  reloadData() {
     //app.cities = ["Ascoli Piceno"];
     app.quakes = new Object();
-
+    
     _.each(app.cities, function(city) {
       app.quakes[city] = new QuakeCollection({
         zona: city
       });
       app.quakes[city].zona = city;
     });
+
+    for(var i=0;i < app.chart.series.length; i++) {
+      app.chart.series[i].remove();
+    }
+    app.chart.redraw();
     
-    this.router = new Router();
-    this.router.history.start({pushState: true});
-    this.trigger('AppInit', 'ok');
+    for (var zona0 in app.quakes) {
+      var zona = zona0;
+      if (app.quakes.hasOwnProperty(zona)) {
+        app.chart.addSeries({
+          id: zona,
+          name: zona,
+          data: []
+        }, false);
+        app.quakes[zona].fetch({
+          success: function(collection, response, options) {
+            collection.each(function(data) {
+              console.log(data.zona);
+              app.chart.get(data.zona).addPoint({
+                x: data.time,
+                y: data.ml,
+                info: {
+                  depth: data.depth,
+                  zona: data.zona,
+                  lat: data.lat,
+                  lon: data.lon
+                }
+              }, false); // non voglio ridisegnare il grafico ad ogni punto
+            });
+            if (! app.redawing) {
+              app.redrawing = true;
+              app.chart.redraw();
+              app.redrawing = false;
+            }
+          }
+        });
+      }
+    }
   }
-});
-
-app.redrawing = false;
-
-app.on('AppInit', (data)=> {
-  console.log('App started ' + data);
 });
 
 require('domready')(function() {
   app.init();
-  for (var zona0 in app.quakes) {
-    var zona = zona0;
-    if (app.quakes.hasOwnProperty(zona)) {
-      app.chart.addSeries({
-        id: zona,
-        name: zona,
-        data: []
-      }, false);
+});
 
-      app.quakes[zona].fetch({
-        success: function(collection, response, options) {
-          collection.each(function(data) {
-            app.chart.get(data.zona).addPoint({
-              x: data.time,
-              y: data.ml,
-              info: {
-                depth: data.depth,
-                zona: data.zona,
-                lat: data.lat,
-                lon: data.lon
-              }
-            } , false); // non voglio ridisegnare il grafico ad ogni punto
-          });
-          if (! app.redawing) {
-            app.redrawing = true;
-            app.chart.redraw();
-            app.redrawing = false;
-          }
-        }
-      });
-    }
-  }
+app.on('AppInit', (data)=> {
+  console.log('App started ' + data);
+  app.reloadData();
 });

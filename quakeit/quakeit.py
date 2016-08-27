@@ -25,7 +25,7 @@ Session = sessionmaker(bind=engine)
 
 Base = declarative_base()
 
-UPDATE_TIME = 1  # minute
+UPDATE_TIME = 1  # seconds
 
 
 def is_int(x):
