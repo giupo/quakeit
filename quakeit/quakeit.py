@@ -61,6 +61,7 @@ content_path = resource_filename(
 
 class DataFromTweet(object):
     pattern = re.compile("#terremoto\sML:([-+]?[0-9]*\.?[0-9]+)\s(\d+)-(\d+)-(\d+)\s(\d+):(\d+):(\d+\s)UTC\sLat=([-+]?[0-9]*\.?[0-9]+)\sLon=([-+]?[0-9]*\.?[0-9]+)\sProf=([-+]?[0-9]*\.?[0-9]+)Km\sZona=(.+)\.\s")  # noqa
+
     def __init__(self, tweet):
         self.id = tweet.id
         print tweet.text
@@ -192,6 +193,9 @@ class DataController(tornado.web.RequestHandler):
     def get(self, id=None):
 
         print "-------------------------", id, "-----------------"
+        x_real_ip = self.request.headers.get("X-Real-IP")
+        remote_ip = x_real_ip or self.request.remote_ip
+        print "Remote IP: ", remote_ip
 
         session = Session()
         try:
