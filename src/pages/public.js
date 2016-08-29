@@ -2,26 +2,12 @@
 
 import app from 'ampersand-app';
 import React from 'react';
-import ReactHighcharts from 'react-highcharts';
-import Highcharts from 'highcharts';
+//import ReactHighcharts from 'react-highcharts/ReactHighstock';
+// import Highcharts from 'highcharts';
+const ReactHighstock = require('react-highcharts/dist/ReactHighstock');
 import $ from 'jquery';
 
 const chartClassName = 'Puppu';
-
-var getChartReferenceByClassName = function (className) {
-  var cssClassName = className;
-  var foundChart = null;
-
-  $(Highcharts.charts).each(function(i, chart){    
-    if(chart.container.classList.contains(cssClassName)){
-      foundChart = chart;
-      return chart;
-    }
-    return null;
-  });
-
-  return foundChart;
-};
 
 var config = {
   chart: {
@@ -43,20 +29,17 @@ var config = {
   
   },
 
-  //series: [{
-  //  data: []
-  //}],
-
   tooltip: {
     formatter: function () {
+      const info = this.points[0].point.info;
       var html = 'Orario:' + this.x +'<br/>' +
         'Magnitudo: <b>' + this.y + '</b><br/>' +
-        'Profondita\': ' + this.point.info.depth + 'km<br/>' +
-        'Zona: <b>' + this.point.info.zona + '</b> (Lat:' + this.point.info.lat +
-        ', Lon:' + this.point.info.lon +' )' ;
+        'Profondita\': ' + info.depth + 'km<br/>' +
+        'Zona: <b>' + info.zona + '</b> (Lat:' + info.lat +
+        ', Lon:' + info.lon +')' ;
       return html;
     }
-  },
+  } // tooltip
 };
 
 
@@ -64,13 +47,12 @@ export default React.createClass({
   displayName : 'PublicPage',
 
   componentDidMount() {
-    var chart = getChartReferenceByClassName(chartClassName);
-    app.chart = chart;
+    app.chart = this.refs.chart.getChart();
   },
   
   render () {
     return (
-      <ReactHighcharts config={config}></ReactHighcharts>
+        <ReactHighstock config={config} ref="chart"></ReactHighstock>
     );
   }
 });

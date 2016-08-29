@@ -21,7 +21,6 @@ app.extend({
   },
   
   reloadData() {
-    //app.cities = ["Ascoli Piceno"];
     app.quakes = new Object();
     
     _.each(app.cities, function(city) {
@@ -34,6 +33,7 @@ app.extend({
     for(var i=0;i < app.chart.series.length; i++) {
       app.chart.series[i].remove();
     }
+    
     app.chart.redraw();
     
     for (var zona0 in app.quakes) {
