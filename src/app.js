@@ -4,6 +4,7 @@ import app from 'ampersand-app';
 import Router from './router';
 import { QuakeCollection } from './models/quake';
 import _ from 'underscore';
+import ReactGA from 'react-ga';
 
 window.app = app;
 
@@ -14,7 +15,12 @@ app.extend({
   cities: ["Rieti", "Perugia", "Macerata", "Norcia", "Ascoli Piceno"],
 
   init() {
-    console.log('app starting'); 
+    console.log('app starting');
+    console.log('registering GA');
+    ReactGA.initialize('UA-47705605-2', {
+      debug: false
+    });
+    console.log('GA registered');
     this.router = new Router();
     this.router.history.start({pushState: true});
     this.trigger('AppInit', 'ok');
