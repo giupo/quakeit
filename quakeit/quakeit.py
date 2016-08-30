@@ -123,7 +123,12 @@ def getData():
             pass
 
     data = [x for x in data
-            if x.zona in ['Rieti', 'Ascoli Piceno', 'Perugia', 'Macerata']]
+            if x.zona in [
+                    'Norcia', 'Rieti', 'Ascoli Piceno',
+                    'Perugia', 'Macerata'
+            ]
+    ]
+
     data = [x for x in data
             if x.time > datetime.datetime(2016, 8, 21)]
 
@@ -191,12 +196,10 @@ class DataController(tornado.web.RequestHandler):
         self.set_header('Content-Type', 'application/json')
 
     def get(self, id=None):
-
         print "-------------------------", id, "-----------------"
         x_real_ip = self.request.headers.get("X-Real-IP")
         remote_ip = x_real_ip or self.request.remote_ip
         print "Remote IP: ", remote_ip
-
         session = Session()
         try:
             if shouldUpdate(session):
