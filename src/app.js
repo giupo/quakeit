@@ -53,6 +53,7 @@ app.extend({
         app.quakes[zona].fetch({
           success: function(collection, response, options) {
             collection.each(function(data) {
+              ReactGA.pageview("/data/" + data.zona);
               console.log(data.zona);
               app.chart.get(data.zona).addPoint({
                 x: data.time,
@@ -81,7 +82,8 @@ require('domready')(function() {
   app.init();
 });
 
-app.on('AppInit', (data)=> {
+app.on('AppInit', (data) => {
   console.log('App started ' + data);
+  ReactGA.pageview("/");
   app.reloadData();
 });

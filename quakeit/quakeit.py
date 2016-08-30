@@ -108,8 +108,12 @@ def getData():
         access_token_key=ACCESS_TOKEN_KEY,
         access_token_secret=ACCESS_TOKEN_SECRET
     )
+    try:
+        tweets = api.GetUserTimeline(screen_name="INGVterremoti", count=500)
+    except Exception as e:
+        print e
+        tweets = []
 
-    tweets = api.GetUserTimeline(screen_name="INGVterremoti", count=500)
     tweets = [t for t in tweets if t.text.startswith("#terremoto")]
     data = []
     for x in tweets:

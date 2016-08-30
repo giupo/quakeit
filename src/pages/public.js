@@ -5,7 +5,6 @@ import React from 'react';
 //import ReactHighcharts from 'react-highcharts/ReactHighstock';
 // import Highcharts from 'highcharts';
 const ReactHighstock = require('react-highcharts/dist/ReactHighstock');
-import $ from 'jquery';
 
 const chartClassName = 'Puppu';
 
@@ -56,3 +55,5 @@ export default React.createClass({
     );
   }
 });
+
+
